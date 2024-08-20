@@ -4,21 +4,30 @@ import os
 api_key = os.getenv('OPENAI_API_KEY')
 
 if api_key is None:
-    raise EnvironmentError(
-        "The OPENAI_API_KEY environment variable is not set."
-)
+    raise EnvironmentError("The OPENAI_API_KEY environment variable is not set.")
 
-client = OpenAI(
-    api_key=api_key,
-)
+client = OpenAI(api_key=api_key)
+registers_summary_path = './registers_summary.csv'
+
+def write_header_if_not_exists():
+    """Write the CSV header if the file does not already exist."""
+    if not os.path.isfile(registers_summary_path):
+        with open(registers_summary_path, mode='w', newline='', encoding='utf-8') as file:
+            file.write("Offset, Abbreviation, Name, Block, RW, Reset, Page\n")
 
 def extract_table_data(pdf_text):
-    # Challenges: cannot extract large amount of data
-    # needs better promp to extract only the tables needed
+    """ Prompt for extracting data in CSV format """
 
     prompt = (
-        "Given the following PDF text, find the device register summary table, "
-        "extract the data, and present it in a structured format:\n\n"
+        "Given the following PDF text, identify and extract the 'Registers Summary PF — BAR 0' table. "
+        "Please structure the extracted data in the following format:\n\n"
+        "Offset, Abbreviation, Name, Block, RW, Reset, Page.\n\n"
+        "Extract all the rows and provide them in a clean, CSV format.\n\n"
+        "BAR 0 has multiple subsections, so skip this text if needed and continue with the same format.\n"
+        "Continue extracting data unless you encounter information that does not follow the specified format.\n\n"
+        "Return only the extracted data, with no additional comments or explanations.\n"
+        "Your output should be able to completely be copied to a CSV file.\n\n"
+        "The header line is not needed in the extracted data; it is already present in the file.\n\n"
         f"{pdf_text}"
     )
 
@@ -31,9 +40,14 @@ def extract_table_data(pdf_text):
             ],
         )
 
-        table_data = response.choices[0].message.content
+        table_data = response.choices[0].message.content.strip()
+        table_data = table_data.replace("```", "").strip()
+        
+        # Append the data to the CSV file
+        with open(registers_summary_path, mode='a', newline='', encoding='utf-8') as file:
+            file.write(table_data + '\n')
 
-        return table_data
+        print(f"CSV data successfully written to {registers_summary_path}")
 
     except OpenAIError as e:
         raise RuntimeError(f"An error occurred while making a request to OpenAI: {e}")
