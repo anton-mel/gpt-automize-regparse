@@ -1,0 +1,9 @@
+services:
+  register-parser:
+    build: .
+    volumes:
+      - ./src:/app/src
+    stdin_open: true  # Keeps the stdin open for interactive mode
+    tty: true         # Allocate a pseudo-TTY (for bash)
+    entrypoint: ["/app/entrypoint.sh"]
+    

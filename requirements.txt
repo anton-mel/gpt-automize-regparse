@@ -1,0 +1,5 @@
+pycryptodome
+pdfplumber
+tabulate
+PyPDF2
+openai
