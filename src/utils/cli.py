@@ -13,5 +13,3 @@ def get_user_input():
     else: page_end = None
 
     return pdf_file_path, page_start, page_end
-
-

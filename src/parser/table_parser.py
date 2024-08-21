@@ -1,12 +1,8 @@
-from openai import OpenAI, OpenAIError
+from parser.openai_client import client
+from openai import OpenAIError
 import os
 
-api_key = os.getenv('OPENAI_API_KEY')
 
-if api_key is None:
-    raise EnvironmentError("The OPENAI_API_KEY environment variable is not set.")
-
-client = OpenAI(api_key=api_key)
 registers_summary_path = './registers_summary.csv'
 
 def write_header_if_not_exists():
@@ -25,6 +21,7 @@ def extract_table_data(pdf_text):
         "Extract all the rows and provide them in a clean, CSV format.\n\n"
         "BAR 0 has multiple subsections, so skip this text if needed and continue with the same format.\n"
         "Continue extracting data unless you encounter information that does not follow the specified format.\n\n"
+        "Assume that currently all the data provided that follows the format should be extracted."
         "Return only the extracted data, with no additional comments or explanations.\n"
         "Your output should be able to completely be copied to a CSV file.\n\n"
         "The header line is not needed in the extracted data; it is already present in the file.\n\n"
