@@ -95,6 +95,7 @@ def generate_struct_code(output_rust_file):
                 field_type_declaration = field_type
 
         if previous_offset is not None:
+            # Calculate the padding required
             padding = calculate_padding(previous_offset, offset)
             if padding > 0:
                 struct_code += f"    _padding{idx-1}: [u8; {padding}], // 0x{previous_offset + 4:X} - 0x{offset - 1:X}\n\n"

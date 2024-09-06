@@ -1,42 +1,43 @@
 #[derive(FromBytes)]
 #[repr(C)]
 pub struct Registers {
-    /// Device Control Register
+    /// Device Control Register [GOOD]
     device_control_register: Volatile<u32>, // 0x0
     _padding0: [u8; 4], // 0x4 - 0x7
 
-    /// Device Status Register
+    /// Device Status Register [GOOD]
     device_status_register: ReadOnly<u32>, // 0x8
     _padding1: [u8; 12], // 0xC - 0x17
 
-    /// Extended Device Control Register
+    /// Extended Device Control Register [GOOD]
     extended_device_control_register: Volatile<u32>, // 0x18
     _padding2: [u8; 4], // 0x1C - 0x1F
 
-    /// Extended SDP Control
+    /// Extended SDP Control [GOOD]
     extended_sdp_control: Volatile<u32>, // 0x20
     _padding3: [u8; 4], // 0x24 - 0x27
 
-    /// I2C Control
+    /// I2C Control [GOOD]
     i2c_control: Volatile<u32>, // 0x28
     _padding4: [u8; 32], // 0x2C - 0x4B
 
-    /// TCP Timer
+    /// TCP Timer [NOTE! Sorted from Timers Registers]
     tcp_timer: Volatile<u32>, // 0x4C
     _padding5: [u8; 432], // 0x50 - 0x1FF
 
-    /// LED Control
+    /// LED Control [GOOD]
     led_control: Volatile<u32>, // 0x200
     _padding6: [u8; 1020], // 0x204 - 0x5FF
 
-    /// PF VFLR Events Indication Target
-    pf_vflr_events_indication_target: Reserved<u32>, // 0x600
-    pf_vflr_events_clear_target: [Volatile<u32>; 1],
-    pf_mailbox_interrupt_causes_registertarget: [Volatile<u32>; 4],
-    pf_mailbox_interrupt_mask_registertarget: [Volatile<u32>; 1],
-    _padding10: [u8; 508], // 0x604 - 0x7FF
+    /// PF VFLR Events Indication
+    pf_vflr_events_indication: Reserved<u32>, // 0x600 [MISSED PADDIGN!]
+    pf_vflr_events_clear: [Volatile<u32>; 2], // 0x700 - 0x704 [MISSED PADDIGN!]
+    /// [NOTE! Virtualization PF Registers]
+    pf_mailbox_interrupt_causes_registertarget: [Volatile<u32>; 4], // 0x710 - 0x71C
+    pf_mailbox_interrupt_mask_registertarget: [Volatile<u32>; 1], // 0x720 - 0x724
+    _padding10: [u8; 508], // 0x604 - 0x7FF [WRONG PADDIGN!]
 
-    /// Extended Interrupt Cause Register
+    /// Extended Interrupt Cause Register [GOOD]
     extended_interrupt_cause_register: Reserved<u32>, // 0x800
     _padding11: [u8; 4], // 0x804 - 0x807
 
@@ -45,22 +46,22 @@ pub struct Registers {
     extended_interrupt_throttle: [Volatile<u32>; 24],
     _padding13: [u8; 116], // 0x80C - 0x87F
 
-    /// Extended Interrupt Mask Set/Read Register
+    /// Extended Interrupt Mask Set/Read Register [GOOD]
     extended_interrupt_mask_set_read_register: Reserved<u32>, // 0x880
     _padding14: [u8; 4], // 0x884 - 0x887
 
-    /// Extended Interrupt Mask Clear Register
+    /// Extended Interrupt Mask Clear Register [GOOD]
     extended_interrupt_mask_clear_register: WriteOnly<u32>, // 0x888
     _padding15: [u8; 4], // 0x88C - 0x88F
 
-    /// Extended Interrupt Auto Mask Enable
+    /// Extended Interrupt Auto Mask Enable [GOOD]
     extended_interrupt_auto_mask_enable: Volatile<u32>, // 0x890
-    /// MSI to EITR Select
+    /// MSI to EITR Select [GOOD]
     msi_to_eitr_select: Volatile<u32>, // 0x894
     /// General Purpose Interrupt Enable
     general_purpose_interrupt_enable: Volatile<u32>, // 0x898
     interrupt_vector_allocation: [Volatile<u32>; 64],
-    _padding19: [u8; 356], // 0x89C - 0x9FF
+    _padding19: [u8; 356], // 0x89C - 0x9FF [WRONG PADDIGN!]
 
     /// Miscellaneous Interrupt Vector Allocation
     miscellaneous_interrupt_vector_allocation: Volatile<u32>, // 0xA00
