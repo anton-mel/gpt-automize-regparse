@@ -1,0 +1,10 @@
+[package]
+name = "hal"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+bit_field = "0.10.2"
+num_enum = "0.7.3"
+volatile = "0.6.1"
+zerocopy = "0.7.35"
