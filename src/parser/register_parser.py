@@ -22,14 +22,14 @@ def extract_and_save_register_data(pdf_file_path, offset, name, page_number):
     # Step 2: Prepare the prompt for extracting detailed register information
     prompt = (
         f"Given the following PDF text provided below, extract the detailed information for the register '{name}' located at offset '{offset}'. "
-        "Please structure the extracted data in the following format:\n\n"
-        "Field, Bit(s), Init Val (So avoid the last column, I do not need Description saved)\n\n"
-        "Also do NOT include this header in the optput since it is already present in the file"
-        "Provide data minimalistically without any spaces after commas, aiming for CSV look like format.\n\n"
-        "If the data in some columnd consist of `,` -- replace it with `-`; otherwise it will break a CSV layout\n\n"
-        "Return only the extracted data, with no additional comments or explanations.\n"
-        "Your output should be able to completely be written to a CSV file.\n\n"
-        "To summarize, you output should be direct data: NO additional explanation, NO header describing the data.\n\n"
+        "Please structure the extracted data in the following CSV format:\n\n"
+        "Field,Bit(s),Init Val,Reserved\n\n"
+        "The last column should indicate whether the bits are reserved or not, using 'True' for reserved bits and 'False' for non-reserved bits analized from Description. "
+        "Do NOT include this header in the output since it is already present in the file."
+        "Provide the data without any spaces after commas, aiming for a clean CSV format.\n\n"
+        "If any data in the columns contains a comma (`,`), replace it with a hyphen (`-`) to maintain CSV integrity.\n\n"
+        "Return only the extracted data, with no additional comments or explanations. Your output should be ready to write directly to a CSV file.\n\n"
+        "To summarize, your output should consist solely of the extracted data: NO additional explanation, NO header describing the data.\n\n"
         f"{pdf_text}"
     )
 

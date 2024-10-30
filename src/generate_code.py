@@ -47,8 +47,13 @@ def handle_offset(offset_str, rw_type):
         # If it's a simple address, parse it directly
         return int(offset_str, 16), None
     else:
-        # If it's a complex expression, use OpenAI to process it
-        return None, query_openai_offset_expression(offset_str, rw_type)
+        match = re.match(r'^0x[0-9A-Fa-f]+', offset_str)
+        if match:
+            base_offset = int(match.group(0), 16)
+            # Call OpenAI to process the rest of the complex expression
+            return base_offset, query_openai_offset_expression(offset_str, rw_type)
+        else:
+            raise ValueError(f"Invalid offset format: {offset_str}")
 
 def generate_struct_code(output_rust_file):
     """Generate Rust struct code based on the register summary and detailed info."""
@@ -74,6 +79,8 @@ def generate_struct_code(output_rust_file):
             else:
                 print(f"Skipping entry with non-parsable offset: {offset_str}")
             continue
+        else:
+            print(f"Parsed offset for {name}: 0x{offset:X}")
 
         # Determine field type based on RW type
         if field_type_declaration is None:
@@ -99,6 +106,8 @@ def generate_struct_code(output_rust_file):
             padding = calculate_padding(previous_offset, offset)
             if padding > 0:
                 struct_code += f"    _padding{idx-1}: [u8; {padding}], // 0x{previous_offset + 4:X} - 0x{offset - 1:X}\n\n"
+            else:
+                print(f"Skipping 0 padding: {padding}\n")
 
         struct_code += f"    /// {row['Name']}\n"
         struct_code += f"    {name}: {field_type_declaration}, // 0x{offset:X}\n"
